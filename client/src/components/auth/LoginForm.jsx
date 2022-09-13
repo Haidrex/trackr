@@ -10,8 +10,8 @@ import {
 import React from "react";
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
-  height: "25rem",
-  width: "25rem",
+  height: "30rem",
+  width: "30rem",
 }));
 
 const StyledBox = styled(Box)(({ theme }) => ({
