@@ -8,6 +8,7 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import styled from "@emotion/styled";
 
 const StyledRow = styled(TableRow)(({ theme }) => ({
@@ -19,6 +20,7 @@ const StyledRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const WorkersTable = ({ workers }) => {
+  let navigate = useNavigate();
   return (
     <TableContainer
       component={Paper}
@@ -35,7 +37,10 @@ const WorkersTable = ({ workers }) => {
         <TableBody>
           {workers.map((worker) => {
             return (
-              <StyledRow>
+              <StyledRow
+                key={worker.id}
+                onClick={() => navigate(`/workers/${worker.id}`)}
+              >
                 <TableCell>{worker.firstname}</TableCell>
                 <TableCell>{worker.lastname}</TableCell>
                 <TableCell>{worker.kennitala}</TableCell>

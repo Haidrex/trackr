@@ -38,8 +38,8 @@ const CreateModal = ({ open, handleClose, workers, setData }) => {
   };
 
   const handleSubmit = async () => {
-    //const newWorker = await createWorker(inputs);
-    setData([...workers, inputs]);
+    const response = await createWorker(inputs);
+    setData([...workers, response.data]);
     handleClose();
   };
 
