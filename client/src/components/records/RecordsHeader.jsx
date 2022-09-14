@@ -8,7 +8,8 @@ import styled from "@emotion/styled";
 const StyledBox = styled(Box)(({ theme }) => ({
   width: "100%",
   display: "flex",
-  justifyContent: "center",
+  justifyContent: "flex-end",
+  marginBottom: "1rem",
 }));
 
 const RecordsHeader = () => {

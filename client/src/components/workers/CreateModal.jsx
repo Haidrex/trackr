@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Modal,
   Box,
@@ -8,6 +8,7 @@ import {
   Button,
 } from "@mui/material";
 import styled from "@emotion/styled";
+import { createWorker } from "../../services/workerService";
 
 const StyledBox = styled(Box)(({ theme }) => ({
   position: "absolute",
@@ -29,7 +30,19 @@ const Wrapper = styled(Box)(({ theme }) => ({
   alignItems: "center",
   gap: "1rem",
 }));
-const CreateModal = ({ open, handleClose }) => {
+const CreateModal = ({ open, handleClose, workers, setData }) => {
+  const [inputs, setInputs] = useState({});
+
+  const handleChange = (event) => {
+    setInputs({ ...inputs, [event.target.name]: event.target.value });
+  };
+
+  const handleSubmit = async () => {
+    //const newWorker = await createWorker(inputs);
+    setData([...workers, inputs]);
+    handleClose();
+  };
+
   return (
     <Modal
       open={open}
@@ -43,15 +56,29 @@ const CreateModal = ({ open, handleClose }) => {
             Naujas darbuotojas
           </Typography>
           <FormControl>
-            <TextField label="Vardas" />
+            <TextField
+              label="Vardas"
+              name="firstname"
+              onChange={handleChange}
+            />
           </FormControl>
           <FormControl>
-            <TextField label="Pavarde" />
+            <TextField
+              label="Pavarde"
+              name="lastname"
+              onChange={handleChange}
+            />
           </FormControl>
           <FormControl>
-            <TextField label="Kennitala" />
+            <TextField
+              label="Kennitala"
+              name="kennitala"
+              onChange={handleChange}
+            />
           </FormControl>
-          <Button variant="contained">Prideti</Button>
+          <Button variant="contained" onClick={handleSubmit}>
+            Prideti
+          </Button>
         </Wrapper>
       </StyledBox>
     </Modal>

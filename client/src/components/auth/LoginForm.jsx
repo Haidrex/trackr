@@ -12,6 +12,7 @@ import React from "react";
 const StyledPaper = styled(Paper)(({ theme }) => ({
   height: "30rem",
   width: "30rem",
+  boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
 }));
 
 const StyledBox = styled(Box)(({ theme }) => ({

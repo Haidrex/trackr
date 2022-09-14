@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import Workers from "./pages/Workers";
 import Navbar from "./components/Navbar";
 import Records from "./pages/Records";
+import Worker from "./pages/Worker";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/records" element={<Records />} />
         <Route path="/workers" element={<Workers />} />
+        <Route path="/workers/:id" element={<Worker />} />
       </Routes>
     </>
   );
