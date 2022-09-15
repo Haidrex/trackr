@@ -1,5 +1,6 @@
 const Sequelize = require("sequelize");
 const db = require("../db");
+const Record = require("./record");
 
 const Worker = db.define(
   "worker",
@@ -27,5 +28,8 @@ const Worker = db.define(
     freezeTableName: true,
   }
 );
+
+Worker.hasMany(Record);
+Record.belongsTo(Worker);
 
 module.exports = Worker;
