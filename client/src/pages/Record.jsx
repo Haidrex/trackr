@@ -4,7 +4,9 @@ import RecordForm from "../components/records/RecordForm";
 
 const Record = () => {
   return (
-    <Container sx={{ display: "flex", justifyContent: "center" }}>
+    <Container
+      sx={{ display: "flex", justifyContent: "center", marginTop: "1rem" }}
+    >
       <RecordForm />
     </Container>
   );

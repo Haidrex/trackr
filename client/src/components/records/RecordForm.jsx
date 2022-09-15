@@ -6,15 +6,19 @@ import {
   MenuItem,
   Select,
   Paper,
+  TextField,
+  Button,
 } from "@mui/material";
+import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/modern/AdapterDayjs";
 import React from "react";
 
 const StyledBox = styled(Box)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
   width: "30rem",
-  height: "30rem",
-  padding: "1rem",
+  padding: "2rem",
+  gap: "2rem",
 }));
 
 const RecordForm = () => {
@@ -35,6 +39,18 @@ const RecordForm = () => {
           <MenuItem>Isvykimas</MenuItem>
         </Select>
       </FormControl>
+      <FormControl>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <TimePicker
+            label="Laikas"
+            onChange={(event) => {
+              console.log(event);
+            }}
+            renderInput={(params) => <TextField {...params} />}
+          />
+        </LocalizationProvider>
+      </FormControl>
+      <Button variant="contained">Išsaugoti</Button>
     </StyledBox>
   );
 };

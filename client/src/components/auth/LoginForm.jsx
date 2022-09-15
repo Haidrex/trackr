@@ -7,7 +7,9 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { login } from "../../services/authService";
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   height: "30rem",
@@ -26,18 +28,48 @@ const StyledBox = styled(Box)(({ theme }) => ({
 }));
 
 const LoginForm = () => {
+  const [inputs, setInputs] = useState({ username: "", password: "" });
+  let navigate = useNavigate();
+
+  const handleChange = (event) => {
+    setInputs({ ...inputs, [event.target.name]: event.target.value });
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      await login(inputs.username, inputs.password);
+      navigate("/record");
+    } catch (error) {
+      console.log(`there has been and error: ${error}`);
+    }
+  };
+
   return (
     <StyledPaper>
       <StyledBox>
         <Typography variant="h4">Prisijungimas</Typography>
         <FormControl>
-          <TextField label="Prisijungimo vardas" />
+          <TextField
+            label="Prisijungimo vardas"
+            name="username"
+            value={inputs.username}
+            onChange={handleChange}
+          />
         </FormControl>
         <FormControl>
-          <TextField type="password" label="Slaptažodis" />
+          <TextField
+            type="password"
+            label="Slaptažodis"
+            name="password"
+            value={inputs.password}
+            onChange={handleChange}
+          />
         </FormControl>
         <FormControl>
-          <Button variant="contained">Prisijungti</Button>
+          <Button variant="contained" onClick={handleSubmit}>
+            Prisijungti
+          </Button>
         </FormControl>
       </StyledBox>
     </StyledPaper>

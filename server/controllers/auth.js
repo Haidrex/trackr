@@ -51,9 +51,10 @@ authRouter.post("/login", async (req, res) => {
     if (!user) {
       return res.status(404).send({ message: "User Not found." });
     }
-
-    let passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
-
+    let passwordIsValid = bcrypt.compareSync(
+      req.body.password,
+      user.dataValues.password
+    );
     if (!passwordIsValid) {
       return res.status(401).send({
         accessToken: null,
@@ -68,7 +69,7 @@ authRouter.post("/login", async (req, res) => {
     res.status(200).send({
       id: user.id,
       username: user.username,
-      isAdmin: user.isAdmin,
+      isadmin: user.isadmin,
       accessToken: token,
     });
   } catch (error) {
