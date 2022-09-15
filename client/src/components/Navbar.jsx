@@ -16,6 +16,9 @@ const Navbar = () => {
           <Button color="inherit" onClick={() => navigate("/records")}>
             Pagrindinis
           </Button>
+          <Button color="inherit" onClick={() => navigate("/record")}>
+            Zymejimas
+          </Button>
           <Button color="inherit" onClick={() => navigate("/workers")}>
             Darbuotojai
           </Button>

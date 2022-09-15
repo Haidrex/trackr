@@ -1,4 +1,4 @@
-import { Button, Container } from "@mui/material";
+import { Box, Button, Container } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import CreateModal from "../components/workers/CreateModal";
 import WorkersTable from "../components/workers/WorkersTable";
@@ -24,13 +24,15 @@ const Workers = () => {
 
   return (
     <Container sx={{ paddingTop: "2rem" }}>
-      <Button
-        variant="contained"
-        sx={{ marginBottom: "1rem" }}
-        onClick={handleOpen}
-      >
-        Prideti darbuotoja
-      </Button>
+      <Box sx={{ width: "100%", display: "flex", justifyContent: "flex-end" }}>
+        <Button
+          variant="contained"
+          sx={{ marginBottom: "1rem" }}
+          onClick={handleOpen}
+        >
+          Prideti darbuotoja
+        </Button>
+      </Box>
       <WorkersTable workers={data} />
       <CreateModal
         open={open}
