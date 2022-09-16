@@ -12,7 +12,7 @@ const getWorker = (id) => {
 };
 
 const createWorker = (worker) => {
-  return axios.post(baseUrl, { worker, headers: authHeader() });
+  return axios.post(baseUrl, worker, { headers: authHeader() });
 };
 
 const deleteWorker = (id) => {

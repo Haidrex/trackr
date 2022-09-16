@@ -5,10 +5,11 @@ import {
   TableHead,
   TableRow,
   Paper,
+  TableBody,
 } from "@mui/material";
 import React from "react";
 
-const RecordsTable = () => {
+const RecordsTable = ({ records }) => {
   return (
     <TableContainer
       component={Paper}
@@ -22,6 +23,22 @@ const RecordsTable = () => {
             <TableCell>Išvykimas</TableCell>
           </TableRow>
         </TableHead>
+        <TableBody>
+          {records.map((record) => {
+            return (
+              <TableRow>
+                <TableCell>{record.worker_id}</TableCell>
+                <TableCell>
+                  {new Date(record.time).toLocaleString("en-US", {
+                    hour: "numeric",
+                    minute: "numeric",
+                    hour12: false,
+                  })}
+                </TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
       </Table>
     </TableContainer>
   );

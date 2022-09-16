@@ -37,3 +37,5 @@ recordTypesRouter.post(
     }
   }
 );
+
+module.exports = recordTypesRouter;

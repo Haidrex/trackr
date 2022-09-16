@@ -2,20 +2,16 @@ const { Worker } = require("../db/models");
 const authJwt = require("../middleware/authJwt");
 const workerRouter = require("express").Router();
 
-workerRouter.get(
-  "/",
-  [authJwt.verifyToken, authJwt.isAdmin],
-  async (request, response) => {
-    try {
-      const workers = await Worker.findAll();
-      response.status(200).json(workers);
-    } catch (error) {
-      response.status(500).json({
-        error: error.message,
-      });
-    }
+workerRouter.get("/", [authJwt.verifyToken], async (request, response) => {
+  try {
+    const workers = await Worker.findAll();
+    response.status(200).json(workers);
+  } catch (error) {
+    response.status(500).json({
+      error: error.message,
+    });
   }
-);
+});
 
 workerRouter.get(
   "/:id",

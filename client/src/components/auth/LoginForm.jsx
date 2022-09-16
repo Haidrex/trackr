@@ -40,6 +40,7 @@ const LoginForm = () => {
     try {
       await login(inputs.username, inputs.password);
       navigate("/record");
+      window.location.reload();
     } catch (error) {
       console.log(`there has been and error: ${error}`);
     }

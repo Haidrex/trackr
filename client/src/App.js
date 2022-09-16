@@ -7,6 +7,7 @@ import Navbar from "./components/Navbar";
 import Records from "./pages/Records";
 import Worker from "./pages/Worker";
 import Record from "./pages/Record";
+import PrivateRoute from "./pages/PrivateRoute";
 
 function App() {
   return (
@@ -15,10 +16,18 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Login />} />
-        <Route path="/record" element={<Record />} />
-        <Route path="/records" element={<Records />} />
-        <Route path="/workers" element={<Workers />} />
-        <Route path="/workers/:id" element={<Worker />} />
+        <Route path="/record" element={<PrivateRoute />}>
+          <Route path="/record" element={<Record />} />
+        </Route>
+        <Route path="/records" element={<PrivateRoute />}>
+          <Route path="/records" element={<Records />} />
+        </Route>
+        <Route path="/workers" element={<PrivateRoute />}>
+          <Route path="/workers" element={<Workers />} />
+        </Route>
+        <Route path="/workers/:id" element={<PrivateRoute />}>
+          <Route path="/workers/:id" element={<Worker />} />
+        </Route>
       </Routes>
     </>
   );

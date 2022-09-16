@@ -14,9 +14,9 @@ recordsRouter.get("/", [authJwt.verifyToken], async (request, response) => {
 
 recordsRouter.post("/", [authJwt.verifyToken], async (request, response) => {
   try {
-    const { time, worker_id, type } = request.body;
+    const { time, worker, type } = request.body;
 
-    if (!time | !worker_id | !type) {
+    if (!time | !worker | !type) {
       return response.status(400).json({
         error: "Missing data",
       });
@@ -24,7 +24,7 @@ recordsRouter.post("/", [authJwt.verifyToken], async (request, response) => {
 
     const record = await Record.create({
       time,
-      worker_id,
+      worker_id: worker,
       type,
     });
 

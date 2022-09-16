@@ -26,7 +26,7 @@ const Record = db.define(
       allowNull: false,
     },
   },
-  { timestamps: false, freezeTableName: true }
+  { timestamps: false, freezeTableName: true, underscored: true }
 );
 
 module.exports = Record;
