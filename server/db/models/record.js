@@ -1,7 +1,5 @@
 const Sequelize = require("sequelize");
 const db = require("../db");
-const RecordType = require("./recordtype");
-const Worker = require("./worker");
 
 const Record = db.define(
   "record",

@@ -5,7 +5,7 @@ import React from "react";
 const StyledBox = styled(Box)(({ theme }) => ({
   width: "100%",
   display: "flex",
-  marginTop: "1rem",
+  marginTop: "2rem",
   padding: "2rem",
   justifyContent: "space-between",
   alignItems: "center",
@@ -34,18 +34,18 @@ const WorkerHeader = ({ worker }) => {
     >
       <NameBox>
         <Box sx={{ display: "flex", gap: "1rem" }}>
-          <Typography variant="h4">Vardas</Typography>
-          <Typography variant="h4">Pavarde</Typography>
+          <Typography variant="h4">{worker.firstname}</Typography>
+          <Typography variant="h4">{worker.lastname}</Typography>
         </Box>
         <Box>
           <Typography variant="h5" sx={{ opacity: 0.7 }}>
-            Kennitala
+            {worker.kennitala}
           </Typography>
         </Box>
       </NameBox>
       <HoursBox>
         <Typography variant="h4">68 val</Typography>
-        <Typography sx={{ opacity: 0.7 }}>Si menesi isdirbta</Typography>
+        <Typography sx={{ opacity: 0.7 }}>Šį mėnesį išdirbta</Typography>
       </HoursBox>
     </StyledBox>
   );

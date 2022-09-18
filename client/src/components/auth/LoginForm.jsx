@@ -29,6 +29,7 @@ const StyledBox = styled(Box)(({ theme }) => ({
 
 const LoginForm = () => {
   const [inputs, setInputs] = useState({ username: "", password: "" });
+  const [errors, setErrors] = useState({ username: "", password: "" });
   let navigate = useNavigate();
 
   const handleChange = (event) => {

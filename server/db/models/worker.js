@@ -32,4 +32,7 @@ const Worker = db.define(
 Worker.hasMany(Record);
 Record.belongsTo(Worker);
 
+Record.hasOne(Worker);
+Worker.belongsTo(Record);
+
 module.exports = Worker;
