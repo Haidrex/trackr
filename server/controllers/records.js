@@ -14,6 +14,33 @@ recordsRouter.get("/", [authJwt.verifyToken], async (request, response) => {
   }
 });
 
+recordsRouter.get("/day", [authJwt.verifyToken], async (request, response) => {
+  //get records by date
+  try {
+    const { date } = request.query;
+
+    const year = new Date(date.getFullYear());
+    const month = new Date(date.getMonth());
+    const day = new Date(date.getDate());
+
+    const from = new Date(`${year}-${month}-${day} 00:00`);
+    const to = new Date(`${year}-${month}-${day} 23:59`);
+
+    const records = await prisma.record.findMany({
+      where: {
+        arrival: {
+          gte: from,
+          lte: to,
+        },
+      },
+      include: { worker: true },
+    });
+    response.status(200).json(records);
+  } catch (error) {
+    response.status(500).json({ error: error.message });
+  }
+});
+
 recordsRouter.get(
   "/today",
   [authJwt.verifyToken],

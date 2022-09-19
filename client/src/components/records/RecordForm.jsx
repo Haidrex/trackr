@@ -9,7 +9,11 @@ import {
   Button,
   Snackbar,
   Alert,
+  TextField,
 } from "@mui/material";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/modern/AdapterDayjs";
+import { TimePicker } from "@mui/x-date-pickers";
 import React from "react";
 import { useState } from "react";
 import { useEffect } from "react";
@@ -32,6 +36,7 @@ const RecordForm = ({ records, setRecords }) => {
     worker: 0,
     type: "arrival",
   });
+  const [time, setTime] = useState(new Date());
 
   useEffect(() => {
     async function getData() {
@@ -60,7 +65,7 @@ const RecordForm = ({ records, setRecords }) => {
     if (inputs.type === "arrival") {
       const response = await createRecord({
         worker: inputs.worker,
-        arrival: new Date(),
+        arrival: time,
         type: inputs.type,
       });
       setOpen(true);
@@ -68,7 +73,7 @@ const RecordForm = ({ records, setRecords }) => {
     } else {
       await createRecord({
         worker: inputs.worker,
-        departure: new Date(),
+        departure: time,
         type: inputs.type,
       });
       //get index of the record to update
@@ -76,7 +81,7 @@ const RecordForm = ({ records, setRecords }) => {
         (record) => record.workerId === inputs.worker
       );
       //update the record
-      const updatedRecord = { ...records[index], departure: new Date() };
+      const updatedRecord = { ...records[index], departure: time };
       //update the records array
       const updatedRecords = [...records];
       updatedRecords[index] = updatedRecord;
@@ -123,6 +128,17 @@ const RecordForm = ({ records, setRecords }) => {
             Išvykimas
           </MenuItem>
         </Select>
+      </FormControl>
+      <FormControl>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <TimePicker
+            label="Time"
+            value={time}
+            onChange={(e) => setTime(e.$d)}
+            ampm={false}
+            renderInput={(params) => <TextField {...params} />}
+          />
+        </LocalizationProvider>
       </FormControl>
       <Button variant="contained" onClick={handleSubmit}>
         Išsaugoti
