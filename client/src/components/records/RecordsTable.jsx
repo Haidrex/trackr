@@ -27,13 +27,24 @@ const RecordsTable = ({ records }) => {
           {records.map((record) => {
             return (
               <TableRow>
-                <TableCell>{record.worker_id}</TableCell>
                 <TableCell>
-                  {new Date(record.time).toLocaleString("en-US", {
+                  {record.worker.firstname} {record.worker.lastname}
+                </TableCell>
+                <TableCell>
+                  {new Date(record.arrival).toLocaleString("en-US", {
                     hour: "numeric",
                     minute: "numeric",
                     hour12: false,
                   })}
+                </TableCell>
+                <TableCell>
+                  {record.departure
+                    ? new Date(record.departure).toLocaleString("en-US", {
+                        hour: "numeric",
+                        minute: "numeric",
+                        hour12: false,
+                      })
+                    : "Dar neišvykęs"}
                 </TableCell>
               </TableRow>
             );

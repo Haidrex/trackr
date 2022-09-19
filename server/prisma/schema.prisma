@@ -11,31 +11,24 @@ datasource db {
 }
 
 model User {
-  id Int @id @default(autoincrement())
-  username String @unique @db.VarChar(50)
-  password String @db.VarChar(255)
-  isadmin Boolean 
+  id       Int     @id @default(autoincrement())
+  username String  @unique @db.VarChar(50)
+  password String  @db.VarChar(255)
+  isadmin  Boolean
 }
 
 model Worker {
-  id Int @id @default(autoincrement())
-  firstname String @db.VarChar(50)
-  lastname String @db.VarChar(50)
-  kennitala String @db.VarChar(15)
-  records Record[]
-}
-
-model RecordType {
-  id Int @id @default(autoincrement())
-  name String @db.VarChar(50)
-  records Record[]
+  id        Int      @id @default(autoincrement())
+  firstname String   @db.VarChar(50)
+  lastname  String   @db.VarChar(50)
+  kennitala String   @db.VarChar(15)
+  records   Record[]
 }
 
 model Record {
-  id Int @id @default(autoincrement())
-  time DateTime @default(now())
-  worker Worker @relation(fields: [workerId], references: [id])
-  workerId Int @unique
-  type RecordType @relation(fields: [typeId], references: [id])
-  typeId Int @unique
+  id        Int       @id @default(autoincrement())
+  arrival   DateTime  @default(now())
+  departure DateTime?
+  worker    Worker    @relation(fields: [workerId], references: [id])
+  workerId  Int       @unique
 }

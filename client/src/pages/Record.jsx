@@ -1,8 +1,9 @@
 import styled from "@emotion/styled";
 import { Container } from "@mui/material";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import RecordForm from "../components/records/RecordForm";
 import RecordsTable from "../components/records/RecordsTable";
+import { getTodaysRecords } from "../services/recordService";
 
 const StyledContainer = styled(Container)(({ theme }) => ({
   display: "flex",
@@ -13,10 +14,18 @@ const StyledContainer = styled(Container)(({ theme }) => ({
 }));
 
 const Record = () => {
+  const [records, setRecords] = useState([]);
+  useEffect(() => {
+    async function getData() {
+      const response = await getTodaysRecords();
+      setRecords(response.data);
+    }
+    getData();
+  }, []);
   return (
     <StyledContainer>
-      <RecordForm />
-      <RecordsTable records={[]} />
+      <RecordForm records={records} setRecords={setRecords} />
+      <RecordsTable records={records} />
     </StyledContainer>
   );
 };

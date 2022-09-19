@@ -7,9 +7,8 @@ import {
   Select,
   Paper,
   Button,
+  Snackbar,
 } from "@mui/material";
-// import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
-// import { AdapterDayjs } from "@mui/x-date-pickers/modern/AdapterDayjs";
 import React from "react";
 import { useState } from "react";
 import { useEffect } from "react";
@@ -25,14 +24,13 @@ const StyledBox = styled(Box)(({ theme }) => ({
   gap: "2rem",
 }));
 
-const RecordForm = () => {
+const RecordForm = ({ records, setRecords }) => {
+  const [open, setOpen] = useState(false);
   const [workers, setWorkers] = useState([]);
   const [inputs, setInputs] = useState({
     worker: 0,
-    type: 1,
+    type: "arrival",
   });
-
-  // const [time, setTime] = useState(new Date());
 
   useEffect(() => {
     async function getData() {
@@ -40,25 +38,48 @@ const RecordForm = () => {
       setWorkers(response.data);
       setInputs({
         worker: response.data[0].id,
-        type: 1,
+        type: "arrival",
       });
     }
     getData();
   }, []);
 
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
   const handleChange = (event) => {
     setInputs({ ...inputs, [event.target.name]: event.target.value });
   };
-  // const handleTimeChange = (newValue) => {
-  //   setTime(newValue);
-  // };
 
-  const handleSubmit = () => {
-    createRecord({
-      time: new Date(),
-      worker: inputs.worker,
-      type: inputs.type,
-    });
+  const handleSubmit = async () => {
+    if (inputs.type === "arrival") {
+      const response = await createRecord({
+        worker: inputs.worker,
+        arrival: new Date(),
+        type: inputs.type,
+      });
+      setRecords((prev) => [...prev, response.data]);
+    } else {
+      await createRecord({
+        worker: inputs.worker,
+        departure: new Date(),
+        type: inputs.type,
+      });
+      //get index of the record to update
+      const index = records.findIndex(
+        (record) => record.workerId === inputs.worker
+      );
+      //update the record
+      const updatedRecord = { ...records[index], departure: new Date() };
+      //update the records array
+      const updatedRecords = [...records];
+      updatedRecords[index] = updatedRecord;
+      setRecords(updatedRecords);
+    }
   };
 
   return (
@@ -92,28 +113,23 @@ const RecordForm = () => {
           value={inputs.type}
           onChange={handleChange}
         >
-          <MenuItem value={1} key="1">
+          <MenuItem value="arrival" key="1">
             Atvykimas
           </MenuItem>
-          <MenuItem value={2} key="2">
+          <MenuItem value="departure" key="2">
             Išvykimas
           </MenuItem>
         </Select>
       </FormControl>
-      {/* <FormControl>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <TimePicker
-            label="Laikas"
-            ampm={false}
-            value={time}
-            onChange={handleTimeChange}
-            renderInput={(params) => <TextField {...params} />}
-          />
-        </LocalizationProvider>
-      </FormControl> */}
       <Button variant="contained" onClick={handleSubmit}>
         Išsaugoti
       </Button>
+      <Snackbar
+        open={open}
+        autoHideDuration={2000}
+        onClose={handleClose}
+        message="Išsaugota"
+      />
     </StyledBox>
   );
 };
