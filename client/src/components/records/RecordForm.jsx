@@ -8,6 +8,7 @@ import {
   Paper,
   Button,
   Snackbar,
+  Alert,
 } from "@mui/material";
 import React from "react";
 import { useState } from "react";
@@ -62,6 +63,7 @@ const RecordForm = ({ records, setRecords }) => {
         arrival: new Date(),
         type: inputs.type,
       });
+      setOpen(true);
       setRecords((prev) => [...prev, response.data]);
     } else {
       await createRecord({
@@ -78,6 +80,7 @@ const RecordForm = ({ records, setRecords }) => {
       //update the records array
       const updatedRecords = [...records];
       updatedRecords[index] = updatedRecord;
+      setOpen(true);
       setRecords(updatedRecords);
     }
   };
@@ -129,7 +132,11 @@ const RecordForm = ({ records, setRecords }) => {
         autoHideDuration={2000}
         onClose={handleClose}
         message="Išsaugota"
-      />
+      >
+        <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
+          Išsaugota
+        </Alert>
+      </Snackbar>
     </StyledBox>
   );
 };
