@@ -20,8 +20,10 @@ workerRouter.get(
   async (request, response) => {
     try {
       const id = request.params.id;
-      const worker = await prisma.worker.findFirst({ where: { id: id } });
-
+      const worker = await prisma.worker.findFirst({
+        where: { id: Number(id) },
+        include: { records: true },
+      });
       response.status(200).json(worker);
     } catch (error) {
       response.status(500).json({
