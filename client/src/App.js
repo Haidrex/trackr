@@ -8,14 +8,16 @@ import Records from "./pages/Records";
 import Worker from "./pages/Worker";
 import Record from "./pages/Record";
 import PrivateRoute from "./pages/PrivateRoute";
+import { getCurrentUser } from "./services/authService";
 
 function App() {
+  const user = getCurrentUser();
   return (
     <>
       <CssBaseline />
       <Navbar />
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={user ? <Record /> : <Login />} />
         <Route path="/record" element={<PrivateRoute />}>
           <Route path="/record" element={<Record />} />
         </Route>

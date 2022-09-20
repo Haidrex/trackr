@@ -132,7 +132,7 @@ const RecordForm = ({ records, setRecords }) => {
       <FormControl>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <TimePicker
-            label="Time"
+            label="Laikas"
             value={time}
             onChange={(e) => setTime(e.$d)}
             ampm={false}

@@ -26,7 +26,7 @@ recordsRouter.get(
       const year = newDate.getFullYear();
       const month = newDate.getMonth() + 1;
       const day = newDate.getDate();
-      console.log(`year: ${year} month: ${month} day: ${day}`);
+
       const from = new Date(`${year}-${month}-${day} 00:00`);
       const to = new Date(`${year}-${month}-${day} 23:59`);
       const records = await prisma.record.findMany({
@@ -38,7 +38,7 @@ recordsRouter.get(
         },
         include: { worker: true },
       });
-      console.log(records);
+
       response.status(200).json(records);
     } catch (error) {
       response.status(500).json({ error: error.message });
@@ -82,7 +82,29 @@ recordsRouter.post("/", [authJwt.verifyToken], async (request, response) => {
           error: "Missing data",
         });
       }
-      console.log(`arrival: ${arrival}, worker: ${worker}`);
+      //check if arrival exists for today
+      const date = new Date();
+      const year = date.getFullYear();
+      const month = date.getMonth() + 1;
+      const day = date.getDate();
+      const from = new Date(`${year}-${month}-${day} 00:00`);
+      const to = new Date(`${year}-${month}-${day} 23:59`);
+      const records = await prisma.record.findMany({
+        where: {
+          workerId: worker,
+          arrival: {
+            gte: from,
+            lte: to,
+          },
+        },
+        include: { worker: true },
+      });
+      if (records.length > 0) {
+        return response.status(400).json({
+          error: "Arrival already exists for today",
+        });
+      }
+
       const record = await prisma.record.create({
         data: {
           arrival: arrival,
@@ -99,11 +121,35 @@ recordsRouter.post("/", [authJwt.verifyToken], async (request, response) => {
           error: "Missing data",
         });
       }
-      //get year month day from departure
-      const date = new Date(departure);
+
+      //check if departure exists for user for today
+      const date = new Date();
       const year = date.getFullYear();
       const month = date.getMonth() + 1;
       const day = date.getDate();
+      const from = new Date(`${year}-${month}-${day} 00:00`);
+      const to = new Date(`${year}-${month}-${day} 23:59`);
+      const records = await prisma.record.findMany({
+        where: {
+          workerId: worker,
+          departure: {
+            gte: from,
+            lte: to,
+          },
+        },
+        include: { worker: true },
+      });
+      if (records.length > 0) {
+        return response.status(400).json({
+          error: "Departure already exists for today",
+        });
+      }
+
+      //get year month day from departure
+      const newDate = new Date(departure);
+      const newyear = newDate.getFullYear();
+      const newmonth = newDate.getMonth() + 1;
+      const newday = newDate.getDate();
       //get last record of worker
       const lastRecord = await prisma.record.findFirst({
         where: {

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Button,
   Paper,
@@ -9,8 +9,11 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import InfoIcon from "@mui/icons-material/Info";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
 import styled from "@emotion/styled";
+import DeleteModal from "./DeleteModal";
 
 const StyledRow = styled(TableRow)(({ theme }) => ({
   "&:hover": {
@@ -20,8 +23,12 @@ const StyledRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-const WorkersTable = ({ workers }) => {
+const WorkersTable = ({ workers, setWorkers }) => {
   let navigate = useNavigate();
+
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
   return (
     <TableContainer
       component={Paper}
@@ -33,23 +40,39 @@ const WorkersTable = ({ workers }) => {
             <TableCell>Vardas</TableCell>
             <TableCell>Pavardė</TableCell>
             <TableCell>Kennitala</TableCell>
+            <TableCell>Veiksmai</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {workers.map((worker) => {
             return (
-              <StyledRow
-                key={worker.id}
-                onClick={() => navigate(`/workers/${worker.id}`)}
-              >
+              <StyledRow key={worker.id}>
                 <TableCell>{worker.firstname}</TableCell>
                 <TableCell>{worker.lastname}</TableCell>
                 <TableCell>{worker.kennitala}</TableCell>
+                <TableCell sx={{ display: "flex", gap: "1rem" }}>
+                  <InfoIcon
+                    onClick={() => navigate(`/workers/${worker.id}`)}
+                    color="primary"
+                    fontSize="large"
+                  />
+                  <DeleteIcon
+                    onClick={handleOpen}
+                    color="error"
+                    fontSize="large"
+                  />
+                </TableCell>
               </StyledRow>
             );
           })}
         </TableBody>
       </Table>
+      <DeleteModal
+        open={open}
+        handleClose={handleClose}
+        workers={workers}
+        setData={setWorkers}
+      />
     </TableContainer>
   );
 };

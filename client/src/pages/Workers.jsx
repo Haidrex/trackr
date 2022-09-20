@@ -33,7 +33,7 @@ const Workers = () => {
           Prideti darbuotoja
         </Button>
       </Box>
-      <WorkersTable workers={data} />
+      <WorkersTable workers={data} setWorkers={setData} />
       <CreateModal
         open={open}
         handleClose={handleClose}
