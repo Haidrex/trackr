@@ -9,8 +9,12 @@ const getAllRecords = async () => {
 const getTodaysRecords = async () => {
   return await axios.get(`${baseUrl}/today`, { headers: authHeader() });
 };
+const getRecordsByDate = async (date) => {
+  return await axios.get(`${baseUrl}/${date}`, { headers: authHeader() });
+};
+
 const createRecord = async (record) => {
   return await axios.post(baseUrl, record, { headers: authHeader() });
 };
 
-export { getAllRecords, getTodaysRecords, createRecord };
+export { getAllRecords, getTodaysRecords, getRecordsByDate, createRecord };

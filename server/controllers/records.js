@@ -14,32 +14,37 @@ recordsRouter.get("/", [authJwt.verifyToken], async (request, response) => {
   }
 });
 
-recordsRouter.get("/day", [authJwt.verifyToken], async (request, response) => {
-  //get records by date
-  try {
-    const { date } = request.query;
+recordsRouter.get(
+  "/:date",
+  [authJwt.verifyToken],
+  async (request, response) => {
+    //get records by date
+    try {
+      const { date } = request.params;
+      const newDate = new Date(date);
 
-    const year = new Date(date.getFullYear());
-    const month = new Date(date.getMonth());
-    const day = new Date(date.getDate());
-
-    const from = new Date(`${year}-${month}-${day} 00:00`);
-    const to = new Date(`${year}-${month}-${day} 23:59`);
-
-    const records = await prisma.record.findMany({
-      where: {
-        arrival: {
-          gte: from,
-          lte: to,
+      const year = newDate.getFullYear();
+      const month = newDate.getMonth() + 1;
+      const day = newDate.getDate();
+      console.log(`year: ${year} month: ${month} day: ${day}`);
+      const from = new Date(`${year}-${month}-${day} 00:00`);
+      const to = new Date(`${year}-${month}-${day} 23:59`);
+      const records = await prisma.record.findMany({
+        where: {
+          arrival: {
+            gte: from,
+            lte: to,
+          },
         },
-      },
-      include: { worker: true },
-    });
-    response.status(200).json(records);
-  } catch (error) {
-    response.status(500).json({ error: error.message });
+        include: { worker: true },
+      });
+      console.log(records);
+      response.status(200).json(records);
+    } catch (error) {
+      response.status(500).json({ error: error.message });
+    }
   }
-});
+);
 
 recordsRouter.get(
   "/today",

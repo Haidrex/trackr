@@ -30,5 +30,5 @@ model Record {
   arrival   DateTime  @default(now())
   departure DateTime?
   worker    Worker    @relation(fields: [workerId], references: [id])
-  workerId  Int       @unique
+  workerId  Int
 }

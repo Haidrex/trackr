@@ -1,7 +1,6 @@
 import { Box, TextField } from "@mui/material";
 import React from "react";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { useState } from "react";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import styled from "@emotion/styled";
 
@@ -12,10 +11,9 @@ const StyledBox = styled(Box)(({ theme }) => ({
   marginBottom: "1rem",
 }));
 
-const RecordsHeader = () => {
-  const [value, setValue] = useState(new Date());
+const RecordsHeader = ({ date, setDate }) => {
   const handleChange = (newValue) => {
-    setValue(newValue);
+    setDate(newValue);
   };
   return (
     <StyledBox>
@@ -23,7 +21,7 @@ const RecordsHeader = () => {
         <DesktopDatePicker
           label="Diena"
           inputFormat="MM/DD/YYYY"
-          value={value}
+          value={date}
           onChange={handleChange}
           renderInput={(params) => <TextField {...params} />}
         />

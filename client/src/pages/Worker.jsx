@@ -12,12 +12,11 @@ const Worker = () => {
   useEffect(() => {
     async function getData() {
       const response = await getWorker(id);
-
+      console.log(response);
       setWorker(response.data);
     }
     getData();
-  }, []);
-
+  }, [id]);
   return (
     <Container>
       <WorkerHeader worker={worker} />

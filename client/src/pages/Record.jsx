@@ -3,7 +3,7 @@ import { Container } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import RecordForm from "../components/records/RecordForm";
 import RecordsTable from "../components/records/RecordsTable";
-import { getTodaysRecords } from "../services/recordService";
+import { getRecordsByDate } from "../services/recordService";
 
 const StyledContainer = styled(Container)(({ theme }) => ({
   display: "flex",
@@ -17,7 +17,7 @@ const Record = () => {
   const [records, setRecords] = useState([]);
   useEffect(() => {
     async function getData() {
-      const response = await getTodaysRecords();
+      const response = await getRecordsByDate(new Date());
       setRecords(response.data);
     }
     getData();
