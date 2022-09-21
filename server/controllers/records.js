@@ -2,6 +2,7 @@ const authJwt = require("../middleware/authJwt");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const recordsRouter = require("express").Router();
+const ExcelJS = require("exceljs");
 
 recordsRouter.get("/", [authJwt.verifyToken], async (request, response) => {
   try {
@@ -72,6 +73,91 @@ recordsRouter.get(
     }
   }
 );
+
+recordsRouter.get(
+  "/export/:date",
+  [authJwt.verifyToken],
+  async (request, response) => {
+    try {
+      const { date } = request.params;
+      const newDate = new Date(date);
+
+      const year = newDate.getFullYear();
+      const month = newDate.getMonth() + 1;
+      const day = newDate.getDate();
+
+      const from = new Date(`${year}-${month}-${day} 00:00`);
+      const to = new Date(`${year}-${month}-${day} 23:59`);
+      const records = await prisma.record.findMany({
+        where: {
+          arrival: {
+            gte: from,
+            lte: to,
+          },
+        },
+        include: { worker: true },
+      });
+
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet("Darbo valandos");
+      const path = "./files";
+      worksheet.columns = [
+        {
+          header: "Darbuotojas",
+          key: "darbuotojas",
+          width: 20,
+        },
+        { header: "Atvyko", key: "atvyko", width: 10 },
+        ,
+        { header: "Išvyko", key: "isvyko", width: 10 },
+        { header: "Išdirbta", key: "isdirbta", width: 10 },
+      ];
+
+      worksheet.insertRow(1, [`Data: ${year}-${month}-${day}`]);
+
+      records.forEach((record) => {
+        const arrivalTime = record.arrival.toLocaleString("en-US", {
+          hour: "numeric",
+          minute: "numeric",
+          hour12: false,
+        });
+
+        const departureTime = record.departure.toLocaleString("en-US", {
+          hour: "numeric",
+          minute: "numeric",
+          hour12: false,
+        });
+
+        const timeWorked = record.departure - record.arrival;
+
+        worksheet.addRow({
+          darbuotojas: `${record.worker.firstname} ${record.worker.lastname}`,
+          atvyko: arrivalTime,
+          isvyko: departureTime,
+          isdirbta: new Date(timeWorked).toISOString().slice(11, 19),
+        });
+      });
+
+      worksheet.getRow(2).eachCell((cell) => {
+        cell.font = { bold: true };
+      });
+
+      const data = await workbook.xlsx
+        .writeFile(`${path}/users.xlsx`)
+        .then(() => {
+          response.send({
+            status: "success",
+            message: "file successfully downloaded",
+            path: `${path}/users.xlsx`,
+          });
+        });
+      //response.status(200).json(records);
+    } catch (error) {
+      response.status(500).json({ error: error.message });
+    }
+  }
+);
+
 recordsRouter.post("/", [authJwt.verifyToken], async (request, response) => {
   try {
     const { arrival, departure, worker, type } = request.body;

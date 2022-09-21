@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import { Modal, Box, Typography, Button } from "@mui/material";
 import styled from "@emotion/styled";
-import { createWorker } from "../../services/workerService";
+import { deleteWorker } from "../../services/workerService";
 
 const StyledBox = styled(Box)(({ theme }) => ({
   position: "absolute",
@@ -23,7 +23,16 @@ const Wrapper = styled(Box)(({ theme }) => ({
   alignItems: "center",
   gap: "1rem",
 }));
-const DeleteModal = ({ open, handleClose, workers, setData }) => {
+const DeleteModal = ({ open, handleClose, workers, setData, workerId }) => {
+  //delete worker by id
+  const handleClick = () => {
+    const response = deleteWorker(workerId);
+    console.log(response);
+    const newWorkers = workers.filter((worker) => worker.id !== workerId);
+    setData(newWorkers);
+    handleClose();
+  };
+
   return (
     <Modal
       open={open}
@@ -40,7 +49,7 @@ const DeleteModal = ({ open, handleClose, workers, setData }) => {
             <Button variant="outlined" onClick={handleClose}>
               Atšaukti
             </Button>
-            <Button variant="contained" color="error">
+            <Button variant="contained" color="error" onClick={handleClick}>
               Šalinti
             </Button>
           </Box>

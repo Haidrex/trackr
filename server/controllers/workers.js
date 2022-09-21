@@ -63,8 +63,17 @@ workerRouter.delete(
   async (request, response) => {
     try {
       const id = request.params.id;
-      const response = await prisma.worker.delete({ where: { id } });
-      response.status(204);
+
+      //delete records by worker id
+      await prisma.record.deleteMany({
+        where: { workerId: Number(id) },
+      });
+
+      await prisma.worker.delete({
+        where: { id: Number(id) },
+      });
+
+      response.status(204).json({ message: "Worker deleted" });
     } catch (error) {
       response.status(500).json({ error: error.message });
     }

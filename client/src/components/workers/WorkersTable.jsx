@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  Button,
   Paper,
   Table,
   TableBody,
@@ -25,9 +24,13 @@ const StyledRow = styled(TableRow)(({ theme }) => ({
 
 const WorkersTable = ({ workers, setWorkers }) => {
   let navigate = useNavigate();
+  const [deleteId, setDeleteId] = useState(null);
 
   const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
+  const handleOpen = (id) => {
+    setDeleteId(id);
+    setOpen(true);
+  };
   const handleClose = () => setOpen(false);
   return (
     <TableContainer
@@ -57,7 +60,7 @@ const WorkersTable = ({ workers, setWorkers }) => {
                     fontSize="large"
                   />
                   <DeleteIcon
-                    onClick={handleOpen}
+                    onClick={() => handleOpen(worker.id)}
                     color="error"
                     fontSize="large"
                   />
@@ -72,6 +75,7 @@ const WorkersTable = ({ workers, setWorkers }) => {
         handleClose={handleClose}
         workers={workers}
         setData={setWorkers}
+        workerId={deleteId}
       />
     </TableContainer>
   );

@@ -19,4 +19,16 @@ const createRecord = async (record) => {
   return await axios.post(baseUrl, record, { headers: authHeader() });
 };
 
-export { getAllRecords, getTodaysRecords, getRecordsByDate, createRecord };
+const exportRecords = async (date) => {
+  return await axios.get(`${baseUrl}/export/${date}`, {
+    headers: authHeader(),
+  });
+};
+
+export {
+  getAllRecords,
+  getTodaysRecords,
+  getRecordsByDate,
+  createRecord,
+  exportRecords,
+};
