@@ -7,20 +7,12 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Button,
 } from "@mui/material";
 import InfoIcon from "@mui/icons-material/Info";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
-import styled from "@emotion/styled";
 import DeleteModal from "./DeleteModal";
-
-const StyledRow = styled(TableRow)(({ theme }) => ({
-  "&:hover": {
-    cursor: "pointer",
-    backgroundColor: "lightgray",
-    transition: "0.2s all",
-  },
-}));
 
 const WorkersTable = ({ workers, setWorkers }) => {
   let navigate = useNavigate();
@@ -49,23 +41,25 @@ const WorkersTable = ({ workers, setWorkers }) => {
         <TableBody>
           {workers.map((worker) => {
             return (
-              <StyledRow key={worker.id}>
+              <TableRow key={worker.id}>
                 <TableCell>{worker.firstname}</TableCell>
                 <TableCell>{worker.lastname}</TableCell>
                 <TableCell>{worker.kennitala}</TableCell>
                 <TableCell sx={{ display: "flex", gap: "1rem" }}>
-                  <InfoIcon
+                  <Button
+                    variant="outlined"
                     onClick={() => navigate(`/workers/${worker.id}`)}
-                    color="primary"
-                    fontSize="large"
-                  />
-                  <DeleteIcon
+                  >
+                    <InfoIcon color="primary" fontSize="medium" />
+                  </Button>
+                  <Button
+                    variant="outlined"
                     onClick={() => handleOpen(worker.id)}
-                    color="error"
-                    fontSize="large"
-                  />
+                  >
+                    <DeleteIcon color="error" fontSize="medium" />
+                  </Button>
                 </TableCell>
-              </StyledRow>
+              </TableRow>
             );
           })}
         </TableBody>

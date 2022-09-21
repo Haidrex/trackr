@@ -6,6 +6,7 @@ const StyledBox = styled(Box)(({ theme }) => ({
   width: "100%",
   display: "flex",
   marginTop: "2rem",
+  marginBottom: "2rem",
   padding: "2rem",
   justifyContent: "space-between",
   alignItems: "center",

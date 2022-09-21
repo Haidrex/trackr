@@ -5,7 +5,6 @@ import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import styled from "@emotion/styled";
 import ImportExportIcon from "@mui/icons-material/ImportExport";
 import { exportRecords } from "../../services/recordService";
-
 const StyledBox = styled(Box)(({ theme }) => ({
   width: "100%",
   display: "flex",
@@ -14,9 +13,12 @@ const StyledBox = styled(Box)(({ theme }) => ({
   gap: "1rem",
 }));
 
-const RecordsHeader = ({ date, setDate }) => {
-  const handleChange = (newValue) => {
-    setDate(newValue);
+const WorkerRecordsHeader = ({ date, setDate }) => {
+  const handleFromChange = (newValue) => {
+    setDate({ ...date, from: newValue });
+  };
+  const handleToChange = (newValue) => {
+    setDate({ ...date, to: newValue });
   };
 
   const handleClick = async () => {
@@ -26,10 +28,21 @@ const RecordsHeader = ({ date, setDate }) => {
     <StyledBox>
       <LocalizationProvider dateAdapter={AdapterMoment}>
         <DesktopDatePicker
-          label="Diena"
+          label="Nuo"
           inputFormat="MM/DD/YYYY"
-          value={date}
-          onChange={handleChange}
+          name="from"
+          value={date.from}
+          onChange={handleFromChange}
+          renderInput={(params) => <TextField {...params} />}
+        />
+      </LocalizationProvider>
+      <LocalizationProvider dateAdapter={AdapterMoment}>
+        <DesktopDatePicker
+          label="Iki"
+          inputFormat="MM/DD/YYYY"
+          name="to"
+          value={date.to}
+          onChange={handleToChange}
           renderInput={(params) => <TextField {...params} />}
         />
       </LocalizationProvider>
@@ -42,4 +55,4 @@ const RecordsHeader = ({ date, setDate }) => {
   );
 };
 
-export default RecordsHeader;
+export default WorkerRecordsHeader;
