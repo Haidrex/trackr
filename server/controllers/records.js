@@ -102,7 +102,6 @@ recordsRouter.get(
 
       const workbook = new ExcelJS.Workbook();
       const worksheet = workbook.addWorksheet("Darbo valandos");
-      const path = "./files";
       worksheet.columns = [
         {
           header: "Data",
@@ -149,16 +148,15 @@ recordsRouter.get(
         const timeWorked = record.departure - record.arrival;
 
         worksheet.addRow({
-          data: record.arrival,
+          data: new Date(record.arrival).toISOString().slice(0, 10),
           pradzia: arrivalTime,
           pabaiga: departureTime,
           isdirbta: new Date(timeWorked).toISOString().slice(11, 19),
         });
       });
 
-      await workbook.xlsx.writeFile(`${path}/darbo_valandos.xlsx`);
-
-      response.status(200).json({ message: "success" });
+      const buffer = await workbook.csv.writeBuffer();
+      response.send(buffer);
     } catch (error) {
       response.status(500).json({ error: error.message });
     }
@@ -256,17 +254,8 @@ recordsRouter.get(
         });
       });
 
-      worksheet.getRow(2).eachCell((cell) => {
-        cell.font = { bold: true };
-      });
-
-      await workbook.xlsx.writeFile(`${path}/users.xlsx`).then(() => {
-        response.send({
-          status: "success",
-          message: "file successfully downloaded",
-          path: `${path}/users.xlsx`,
-        });
-      });
+      const buffer = await workbook.csv.writeBuffer();
+      response.send(buffer);
     } catch (error) {
       response.status(500).json({ error: error.message });
     }

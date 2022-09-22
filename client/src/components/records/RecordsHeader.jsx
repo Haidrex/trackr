@@ -20,7 +20,17 @@ const RecordsHeader = ({ date, setDate }) => {
   };
 
   const handleClick = async () => {
-    await exportRecords(date);
+    const response = await exportRecords(
+      date,
+      { responseType: "arrayBuffer" },
+      { headers: { "Content-Type": "blob" } }
+    );
+    const url = URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", Date.now().toString() + ".csv");
+    document.body.appendChild(link);
+    link.click();
   };
   return (
     <StyledBox>
