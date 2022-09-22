@@ -4,7 +4,7 @@ import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import styled from "@emotion/styled";
 import ImportExportIcon from "@mui/icons-material/ImportExport";
-import { exportRecords } from "../../services/recordService";
+import { exportByRange } from "../../services/recordService";
 const StyledBox = styled(Box)(({ theme }) => ({
   width: "100%",
   display: "flex",
@@ -13,7 +13,7 @@ const StyledBox = styled(Box)(({ theme }) => ({
   gap: "1rem",
 }));
 
-const WorkerRecordsHeader = ({ date, setDate }) => {
+const WorkerRecordsHeader = ({ workerId, date, setDate }) => {
   const handleFromChange = (newValue) => {
     setDate({ ...date, from: newValue });
   };
@@ -22,7 +22,7 @@ const WorkerRecordsHeader = ({ date, setDate }) => {
   };
 
   const handleClick = async () => {
-    await exportRecords(date);
+    await exportByRange(workerId, date.from, date.to);
   };
   return (
     <StyledBox>

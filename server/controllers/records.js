@@ -48,6 +48,124 @@ recordsRouter.get(
 );
 
 recordsRouter.get(
+  "/:id/:from/:to",
+  [authJwt.verifyToken],
+  async (request, response) => {
+    try {
+      const { id, from, to } = request.params;
+      const fromDate = new Date(from).setHours(0, 0, 0);
+      const toDate = new Date(to).setHours(23, 59, 59);
+
+      const records = await prisma.worker.findFirst({
+        where: { id: Number(id) },
+        include: {
+          records: {
+            where: {
+              arrival: {
+                gte: new Date(fromDate),
+                lte: new Date(toDate),
+              },
+            },
+          },
+        },
+      });
+
+      response.status(200).json(records);
+    } catch (error) {
+      response.status(500).json({ error: error.message });
+    }
+  }
+);
+
+recordsRouter.get(
+  "/export/:id/:from/:to",
+  [authJwt.verifyToken],
+  async (request, response) => {
+    try {
+      const { id, from, to } = request.params;
+      const fromDate = new Date(from).setHours(0, 0, 0);
+      const toDate = new Date(to).setHours(23, 59, 59);
+
+      const records = await prisma.worker.findFirst({
+        where: { id: Number(id) },
+        include: {
+          records: {
+            where: {
+              arrival: {
+                gte: new Date(fromDate),
+                lte: new Date(toDate),
+              },
+            },
+          },
+        },
+      });
+
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet("Darbo valandos");
+      const path = "./files";
+      worksheet.columns = [
+        {
+          header: "Data",
+          key: "data",
+          width: 20,
+        },
+        {
+          header: "Pradžia",
+          key: "pradzia",
+          width: 20,
+        },
+        {
+          header: "Pabaiga",
+          key: "pabaiga",
+          width: 20,
+        },
+        {
+          header: "Išdirbta",
+          key: "isdirbta",
+          width: 20,
+        },
+      ];
+
+      records.records.forEach((record) => {
+        let arrivalTime;
+        let departureTime;
+        if (record.arrival) {
+          arrivalTime =
+            record.arrival.toLocaleString("en-US", {
+              hour: "numeric",
+              minute: "numeric",
+              hour12: false,
+            }) || "Nepažymėta";
+        }
+
+        if (record.departure) {
+          departureTime = record.departure.toLocaleString("en-US", {
+            hour: "numeric",
+            minute: "numeric",
+            hour12: false,
+          });
+        }
+
+        const timeWorked = record.departure - record.arrival;
+
+        worksheet.addRow({
+          data: record.arrival,
+          pradzia: arrivalTime,
+          pabaiga: departureTime,
+          isdirbta: new Date(timeWorked).toISOString().slice(11, 19),
+        });
+      });
+
+      await workbook.xlsx.writeFile(`${path}/darbo_valandos.xlsx`);
+
+      response.status(200).json({ message: "success" });
+    } catch (error) {
+      response.status(500).json({ error: error.message });
+    }
+  }
+);
+
+recordsRouter.get(
   "/today",
   [authJwt.verifyToken],
   async (request, response) => {
@@ -142,16 +260,13 @@ recordsRouter.get(
         cell.font = { bold: true };
       });
 
-      const data = await workbook.xlsx
-        .writeFile(`${path}/users.xlsx`)
-        .then(() => {
-          response.send({
-            status: "success",
-            message: "file successfully downloaded",
-            path: `${path}/users.xlsx`,
-          });
+      await workbook.xlsx.writeFile(`${path}/users.xlsx`).then(() => {
+        response.send({
+          status: "success",
+          message: "file successfully downloaded",
+          path: `${path}/users.xlsx`,
         });
-      //response.status(200).json(records);
+      });
     } catch (error) {
       response.status(500).json({ error: error.message });
     }

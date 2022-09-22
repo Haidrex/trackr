@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import WorkerHeader from "../components/workers/WorkerHeader";
 import WorkerRecords from "../components/workers/WorkerRecords";
 import WorkerRecordsHeader from "../components/workers/WorkerRecordsHeader";
+import { getRecordsByRange } from "../services/recordService";
 import { getWorker } from "../services/workerService";
 
 const Worker = () => {
@@ -16,16 +17,17 @@ const Worker = () => {
 
   useEffect(() => {
     async function getData() {
-      const response = await getWorker(id);
+      // const response = await getWorker(id);
+      const response = await getRecordsByRange(id, date.from, date.to);
       setWorker(response.data);
     }
     getData();
-  }, [id]);
+  }, [id, date.from, date.to]);
 
   return (
     <Container>
       <WorkerHeader worker={worker} />
-      <WorkerRecordsHeader date={date} setDate={setDate} />
+      <WorkerRecordsHeader workerId={id} date={date} setDate={setDate} />
       <WorkerRecords records={worker.records} />
     </Container>
   );

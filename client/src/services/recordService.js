@@ -25,10 +25,24 @@ const exportRecords = async (date) => {
   });
 };
 
+const getRecordsByRange = async (id, from, to) => {
+  return await axios.get(`${baseUrl}/${id}/${from}/${to}`, {
+    headers: authHeader(),
+  });
+};
+
+const exportByRange = async (id, from, to) => {
+  return await axios.get(`${baseUrl}/export/${id}/${from}/${to}`, {
+    headers: authHeader(),
+  });
+};
+
 export {
   getAllRecords,
   getTodaysRecords,
   getRecordsByDate,
   createRecord,
   exportRecords,
+  getRecordsByRange,
+  exportByRange,
 };
