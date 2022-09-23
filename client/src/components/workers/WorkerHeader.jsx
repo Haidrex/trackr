@@ -10,12 +10,21 @@ const StyledBox = styled(Box)(({ theme }) => ({
   padding: "2rem",
   justifyContent: "space-between",
   alignItems: "center",
+  "@media (max-width: 700px)": {
+    flexDirection: "column",
+    gap: "1rem",
+  },
 }));
 
 const NameBox = styled(Box)(({ theme }) => ({
   display: "flex",
   gap: "1rem",
   alignItems: "flex-end",
+  "@media (max-width: 700px)": {
+    flexDirection: "column",
+    alignItems: "center",
+    gap: "0",
+  },
 }));
 
 const HoursBox = styled(Box)(({ theme }) => ({

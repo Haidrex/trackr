@@ -11,6 +11,13 @@ const StyledBox = styled(Box)(({ theme }) => ({
   justifyContent: "flex-end",
   marginBottom: "1rem",
   gap: "1rem",
+  "@media (max-width: 700px)": {
+    flexDirection: "column",
+  },
+}));
+const DatesBox = styled(Box)(({ theme }) => ({
+  display: "flex",
+  gap: "1rem",
 }));
 
 const WorkerRecordsHeader = ({ workerId, date, setDate }) => {
@@ -38,26 +45,28 @@ const WorkerRecordsHeader = ({ workerId, date, setDate }) => {
   };
   return (
     <StyledBox>
-      <LocalizationProvider dateAdapter={AdapterMoment}>
-        <DesktopDatePicker
-          label="Nuo"
-          inputFormat="MM/DD/YYYY"
-          name="from"
-          value={date.from}
-          onChange={handleFromChange}
-          renderInput={(params) => <TextField {...params} />}
-        />
-      </LocalizationProvider>
-      <LocalizationProvider dateAdapter={AdapterMoment}>
-        <DesktopDatePicker
-          label="Iki"
-          inputFormat="MM/DD/YYYY"
-          name="to"
-          value={date.to}
-          onChange={handleToChange}
-          renderInput={(params) => <TextField {...params} />}
-        />
-      </LocalizationProvider>
+      <DatesBox>
+        <LocalizationProvider dateAdapter={AdapterMoment}>
+          <DesktopDatePicker
+            label="Nuo"
+            inputFormat="MM/DD/YYYY"
+            name="from"
+            value={date.from}
+            onChange={handleFromChange}
+            renderInput={(params) => <TextField {...params} />}
+          />
+        </LocalizationProvider>
+        <LocalizationProvider dateAdapter={AdapterMoment}>
+          <DesktopDatePicker
+            label="Iki"
+            inputFormat="MM/DD/YYYY"
+            name="to"
+            value={date.to}
+            onChange={handleToChange}
+            renderInput={(params) => <TextField {...params} />}
+          />
+        </LocalizationProvider>
+      </DatesBox>
 
       <Button variant="outlined" onClick={handleClick}>
         <ImportExportIcon />

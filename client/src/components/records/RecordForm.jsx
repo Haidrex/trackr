@@ -27,6 +27,9 @@ const StyledBox = styled(Box)(({ theme }) => ({
   width: "30rem",
   padding: "2rem",
   gap: "2rem",
+  "@media (max-width: 500px)": {
+    width: "100%",
+  },
 }));
 
 const RecordForm = ({ records, setRecords }) => {
