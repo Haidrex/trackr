@@ -1,12 +1,8 @@
-import React, { useState } from "react";
-import {
-  Modal,
-  Box,
-  Typography,
-  FormControl,
-  TextField,
-  Button,
-} from "@mui/material";
+import React from "react";
+import { Modal, Box, Typography, TextField, Button } from "@mui/material";
+import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 import styled from "@emotion/styled";
 import { createWorker } from "../../services/workerService";
 
@@ -30,16 +26,32 @@ const Wrapper = styled(Box)(({ theme }) => ({
   alignItems: "center",
   gap: "1rem",
 }));
-const CreateModal = ({ open, handleClose, workers, setData }) => {
-  const [inputs, setInputs] = useState({});
 
-  const handleChange = (event) => {
-    setInputs({ ...inputs, [event.target.name]: event.target.value });
-  };
+const schema = yup
+  .object({
+    firstname: yup.string().required("Vardas privalomas"),
+    lastname: yup.string().required("Pavardė privaloma"),
+    kennitala: yup.string().required("Kennitala privaloma"),
+  })
+  .required();
 
-  const handleSubmit = async () => {
-    const response = await createWorker(inputs);
-    setData([...workers, response.data]);
+const CreateModal = ({ open, handleClose, setData }) => {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      firstname: "",
+      lastname: "",
+      kennitala: "",
+    },
+    resolver: yupResolver(schema),
+  });
+
+  const onSubmit = async (data) => {
+    const response = await createWorker(data);
+    setData((values) => [...values, response.data]);
     handleClose();
   };
 
@@ -51,35 +63,52 @@ const CreateModal = ({ open, handleClose, workers, setData }) => {
       aria-describedby="modal-modal-description"
     >
       <StyledBox>
-        <Wrapper>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Naujas darbuotojas
-          </Typography>
-          <FormControl>
-            <TextField
-              label="Vardas"
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Wrapper>
+            <Typography id="modal-modal-title" variant="h6" component="h2">
+              Naujas darbuotojas
+            </Typography>
+            <Controller
               name="firstname"
-              onChange={handleChange}
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label="Vardas"
+                  error={errors.firstname ? true : false}
+                  helperText={errors.firstname?.message}
+                />
+              )}
             />
-          </FormControl>
-          <FormControl>
-            <TextField
-              label="Pavarde"
+            <Controller
               name="lastname"
-              onChange={handleChange}
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label="Pavardė"
+                  error={errors.lastname ? true : false}
+                  helperText={errors.lastname?.message}
+                />
+              )}
             />
-          </FormControl>
-          <FormControl>
-            <TextField
-              label="Kennitala"
+            <Controller
               name="kennitala"
-              onChange={handleChange}
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label="Kennitala"
+                  error={errors.kennitala ? true : false}
+                  helperText={errors.kennitala?.message}
+                />
+              )}
             />
-          </FormControl>
-          <Button variant="contained" onClick={handleSubmit}>
-            Prideti
-          </Button>
-        </Wrapper>
+            <Button type="submit" variant="contained">
+              Pridėti
+            </Button>
+          </Wrapper>
+        </form>
       </StyledBox>
     </Modal>
   );

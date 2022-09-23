@@ -34,12 +34,7 @@ const Workers = () => {
         </Button>
       </Box>
       <WorkersTable workers={data} setWorkers={setData} />
-      <CreateModal
-        open={open}
-        handleClose={handleClose}
-        workers={data}
-        setData={setData}
-      />
+      <CreateModal open={open} handleClose={handleClose} setData={setData} />
     </Container>
   );
 };

@@ -5,7 +5,6 @@ import WorkerHeader from "../components/workers/WorkerHeader";
 import WorkerRecords from "../components/workers/WorkerRecords";
 import WorkerRecordsHeader from "../components/workers/WorkerRecordsHeader";
 import { getRecordsByRange } from "../services/recordService";
-import { getWorker } from "../services/workerService";
 
 const Worker = () => {
   const [worker, setWorker] = useState({});
@@ -17,7 +16,6 @@ const Worker = () => {
 
   useEffect(() => {
     async function getData() {
-      // const response = await getWorker(id);
       const response = await getRecordsByRange(id, date.from, date.to);
       setWorker(response.data);
     }

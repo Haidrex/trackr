@@ -1,20 +1,18 @@
-import styled from "@emotion/styled";
-import {
-  Box,
-  Button,
-  FormControl,
-  Paper,
-  TextField,
-  Typography,
-} from "@mui/material";
-import React, { useState } from "react";
+import React from "react";
+import { Box, Button, Paper, TextField, Typography } from "@mui/material";
+import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 import { login } from "../../services/authService";
+import styled from "@emotion/styled";
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   height: "30rem",
   width: "30rem",
   boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
+  display: "flex",
+  justifyContent: "center",
 }));
 
 const StyledBox = styled(Box)(({ theme }) => ({
@@ -27,19 +25,31 @@ const StyledBox = styled(Box)(({ theme }) => ({
   gap: "2.5rem",
 }));
 
+const schema = yup
+  .object({
+    username: yup.string().required("Prisijungimo vardas yra privalomas"),
+    password: yup.string().required("Slaptažodis privalomas"),
+  })
+  .required();
+
 const LoginForm = () => {
-  const [inputs, setInputs] = useState({ username: "", password: "" });
-  const [errors, setErrors] = useState({ username: "", password: "" });
   let navigate = useNavigate();
 
-  const handleChange = (event) => {
-    setInputs({ ...inputs, [event.target.name]: event.target.value });
-  };
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      username: "",
+      password: "",
+    },
+    resolver: yupResolver(schema),
+  });
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const onSubmit = async (data) => {
     try {
-      await login(inputs.username, inputs.password);
+      await login(data.username, data.password);
       navigate("/record");
       window.location.reload();
     } catch (error) {
@@ -49,31 +59,40 @@ const LoginForm = () => {
 
   return (
     <StyledPaper>
-      <StyledBox>
-        <Typography variant="h4">Prisijungimas</Typography>
-        <FormControl>
-          <TextField
-            label="Prisijungimo vardas"
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <StyledBox>
+          <Typography variant="h4">Prisijungimas</Typography>
+          <Controller
             name="username"
-            value={inputs.username}
-            onChange={handleChange}
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="Prisijungimo vardas"
+                error={errors.username ? true : false}
+                helperText={errors.username?.message}
+              />
+            )}
           />
-        </FormControl>
-        <FormControl>
-          <TextField
-            type="password"
-            label="Slaptažodis"
+          <Controller
             name="password"
-            value={inputs.password}
-            onChange={handleChange}
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                type="password"
+                label="Slaptažodis"
+                error={errors.password ? true : false}
+                helperText={errors.password?.message}
+              />
+            )}
           />
-        </FormControl>
-        <FormControl>
-          <Button variant="contained" onClick={handleSubmit}>
+
+          <Button variant="contained" type="submit">
             Prisijungti
           </Button>
-        </FormControl>
-      </StyledBox>
+        </StyledBox>
+      </form>
     </StyledPaper>
   );
 };
