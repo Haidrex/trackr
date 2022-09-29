@@ -1,7 +1,7 @@
 import axios from "axios";
 import authHeader from "./auth-header";
 
-const baseUrl = "http://localhost:4000/api/records";
+const baseUrl = "http://localhost:4001/api/records";
 
 const getAllRecords = async () => {
   return await axios.get(baseUrl, { headers: authHeader() });
@@ -20,9 +20,13 @@ const createRecord = async (record) => {
 };
 
 const exportRecords = async (date) => {
-  return await axios.get(`${baseUrl}/export/${date}`, {
-    headers: authHeader(),
-  });
+  return await axios.post(
+    `${baseUrl}/exportDay`,
+    { date },
+    {
+      headers: authHeader(),
+    }
+  );
 };
 
 const getRecordsByRange = async (id, from, to) => {
@@ -32,9 +36,13 @@ const getRecordsByRange = async (id, from, to) => {
 };
 
 const exportByRange = async (id, from, to) => {
-  return await axios.get(`${baseUrl}/export/${id}/${from}/${to}`, {
-    headers: authHeader(),
-  });
+  return await axios.post(
+    `${baseUrl}/export`,
+    { id, from, to },
+    {
+      headers: authHeader(),
+    }
+  );
 };
 
 export {

@@ -11,7 +11,7 @@ recordsRouter.get("/", [authJwt.verifyToken], async (request, response) => {
     });
     response.status(200).json(records);
   } catch (error) {
-    response.status(500).json({ error: error.message });
+    response.status(500).json({ message: error.message });
   }
 });
 
@@ -19,7 +19,6 @@ recordsRouter.get(
   "/:date",
   [authJwt.verifyToken],
   async (request, response) => {
-    //get records by date
     try {
       const { date } = request.params;
       const newDate = new Date(date);
@@ -42,7 +41,7 @@ recordsRouter.get(
 
       response.status(200).json(records);
     } catch (error) {
-      response.status(500).json({ error: error.message });
+      response.status(500).json({ message: error.message });
     }
   }
 );
@@ -72,17 +71,17 @@ recordsRouter.get(
 
       response.status(200).json(records);
     } catch (error) {
-      response.status(500).json({ error: error.message });
+      response.status(500).json({ message: error.message });
     }
   }
 );
 
-recordsRouter.get(
-  "/export/:id/:from/:to",
+recordsRouter.post(
+  "/export",
   [authJwt.verifyToken],
   async (request, response) => {
     try {
-      const { id, from, to } = request.params;
+      const { id, from, to } = request.body;
       const fromDate = new Date(from).setHours(0, 0, 0);
       const toDate = new Date(to).setHours(23, 59, 59);
 
@@ -190,12 +189,12 @@ recordsRouter.get(
   }
 );
 
-recordsRouter.get(
-  "/export/:date",
+recordsRouter.post(
+  "/exportDay",
   [authJwt.verifyToken],
   async (request, response) => {
     try {
-      const { date } = request.params;
+      const { date } = request.body;
       const newDate = new Date(date);
 
       const year = newDate.getFullYear();
@@ -269,7 +268,7 @@ recordsRouter.post("/", [authJwt.verifyToken], async (request, response) => {
     if (type === "arrival") {
       if (!arrival | !worker) {
         return response.status(400).json({
-          error: "Missing data",
+          message: "Trūksta duomenų",
         });
       }
       //check if arrival exists for today
@@ -291,7 +290,7 @@ recordsRouter.post("/", [authJwt.verifyToken], async (request, response) => {
       });
       if (records.length > 0) {
         return response.status(400).json({
-          error: "Arrival already exists for today",
+          message: "Atvykimas jau pažymėtas",
         });
       }
 
@@ -308,7 +307,7 @@ recordsRouter.post("/", [authJwt.verifyToken], async (request, response) => {
     } else {
       if (!departure | !worker) {
         return response.status(400).json({
-          error: "Missing data",
+          message: "Trūksta duomenų",
         });
       }
 
@@ -331,7 +330,7 @@ recordsRouter.post("/", [authJwt.verifyToken], async (request, response) => {
       });
       if (records.length > 0) {
         return response.status(400).json({
-          error: "Departure already exists for today",
+          message: "Išvykimas jau pažymėtas",
         });
       }
 
@@ -373,12 +372,12 @@ recordsRouter.post("/", [authJwt.verifyToken], async (request, response) => {
         response.status(200).json(record);
       } else {
         return response.status(400).json({
-          error: "Missing data",
+          message: "Trūksta duomenų",
         });
       }
     }
   } catch (error) {
-    response.status(500).json({ error: error.message });
+    response.status(500).json({ message: error.message });
   }
 });
 

@@ -1,7 +1,7 @@
 import axios from "axios";
 import authHeader from "./auth-header";
 
-const baseUrl = "http://localhost:4000/api/workers";
+const baseUrl = "http://localhost:4001/api/workers";
 
 const getAllWorkers = async () => {
   return await axios.get(baseUrl, { headers: authHeader() });

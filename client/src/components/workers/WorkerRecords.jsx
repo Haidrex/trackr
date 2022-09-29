@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Table,
   TableCell,
@@ -7,7 +8,6 @@ import {
   Paper,
   TableBody,
 } from "@mui/material";
-import React from "react";
 
 const WorkerRecords = ({ records }) => {
   return (
@@ -24,7 +24,7 @@ const WorkerRecords = ({ records }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {records &&
+          {records && records.length > 0 ? (
             records.map((record) => {
               return (
                 <TableRow>
@@ -55,7 +55,14 @@ const WorkerRecords = ({ records }) => {
                   </TableCell>
                 </TableRow>
               );
-            })}
+            })
+          ) : (
+            <TableRow>
+              <TableCell colSpan={3} align="center">
+                Įrašų nėra
+              </TableCell>
+            </TableRow>
+          )}
         </TableBody>
       </Table>
     </TableContainer>

@@ -24,31 +24,39 @@ const RecordsTable = ({ records }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {records.map((record) => {
-            return (
-              <TableRow>
-                <TableCell>
-                  {record.worker.firstname} {record.worker.lastname}
-                </TableCell>
-                <TableCell>
-                  {new Date(record.arrival).toLocaleString("en-US", {
-                    hour: "numeric",
-                    minute: "numeric",
-                    hour12: false,
-                  })}
-                </TableCell>
-                <TableCell>
-                  {record.departure
-                    ? new Date(record.departure).toLocaleString("en-US", {
-                        hour: "numeric",
-                        minute: "numeric",
-                        hour12: false,
-                      })
-                    : "Dar neišvykęs"}
-                </TableCell>
-              </TableRow>
-            );
-          })}
+          {records.length > 0 ? (
+            records.map((record) => {
+              return (
+                <TableRow>
+                  <TableCell>
+                    {record.worker.firstname} {record.worker.lastname}
+                  </TableCell>
+                  <TableCell>
+                    {new Date(record.arrival).toLocaleString("en-US", {
+                      hour: "numeric",
+                      minute: "numeric",
+                      hour12: false,
+                    })}
+                  </TableCell>
+                  <TableCell>
+                    {record.departure
+                      ? new Date(record.departure).toLocaleString("en-US", {
+                          hour: "numeric",
+                          minute: "numeric",
+                          hour12: false,
+                        })
+                      : "Dar neišvykęs"}
+                  </TableCell>
+                </TableRow>
+              );
+            })
+          ) : (
+            <TableRow>
+              <TableCell colSpan={3} align="center">
+                Įrašų nėra
+              </TableCell>
+            </TableRow>
+          )}
         </TableBody>
       </Table>
     </TableContainer>

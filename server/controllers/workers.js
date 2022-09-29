@@ -9,7 +9,7 @@ workerRouter.get("/", [authJwt.verifyToken], async (request, response) => {
     response.status(200).json(workers);
   } catch (error) {
     response.status(500).json({
-      error: error.message,
+      message: error.message,
     });
   }
 });
@@ -27,7 +27,7 @@ workerRouter.get(
       response.status(200).json(worker);
     } catch (error) {
       response.status(500).json({
-        error: error.message,
+        message: error.message,
       });
     }
   }
@@ -41,11 +41,21 @@ workerRouter.post(
 
     if (!firstname | !lastname | !kennitala) {
       return response.status(400).json({
-        error: "Missing worker data",
+        error: "Trūksta duomenų",
       });
     }
 
-    const worker = await prisma.worker.create({
+    const worker = await prisma.worker.findFirst({
+      where: { kennitala: kennitala },
+    });
+
+    if (worker) {
+      return response.status(400).json({
+        message: "Darbuotojas su tokiu kennitala jau yra",
+      });
+    }
+
+    const newWorker = await prisma.worker.create({
       data: {
         firstname,
         lastname,
@@ -53,7 +63,7 @@ workerRouter.post(
       },
     });
 
-    response.status(201).json(worker);
+    response.status(201).json(newWorker);
   }
 );
 

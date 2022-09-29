@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Modal, Box, Typography, TextField, Button } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -36,6 +36,7 @@ const schema = yup
   .required();
 
 const CreateModal = ({ open, handleClose, setData }) => {
+  const [error, setError] = useState(null);
   const {
     control,
     handleSubmit,
@@ -50,9 +51,14 @@ const CreateModal = ({ open, handleClose, setData }) => {
   });
 
   const onSubmit = async (data) => {
-    const response = await createWorker(data);
-    setData((values) => [...values, response.data]);
-    handleClose();
+    setError(null);
+    try {
+      const response = await createWorker(data);
+      setData((values) => [...values, response.data]);
+      handleClose();
+    } catch (error) {
+      setError(error.response.data.message);
+    }
   };
 
   return (
@@ -104,6 +110,11 @@ const CreateModal = ({ open, handleClose, setData }) => {
                 />
               )}
             />
+            {error && (
+              <Typography color="error" textAlign="center">
+                {error}
+              </Typography>
+            )}
             <Button type="submit" variant="contained">
               Pridėti
             </Button>
