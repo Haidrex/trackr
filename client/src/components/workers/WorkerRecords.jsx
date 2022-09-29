@@ -27,7 +27,7 @@ const WorkerRecords = ({ records }) => {
           {records && records.length > 0 ? (
             records.map((record) => {
               return (
-                <TableRow>
+                <TableRow key={record.id}>
                   <TableCell>
                     {record.arrival
                       ? new Date(record.arrival).toLocaleString("en-US", {

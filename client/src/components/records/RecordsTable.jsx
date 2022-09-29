@@ -27,7 +27,7 @@ const RecordsTable = ({ records }) => {
           {records.length > 0 ? (
             records.map((record) => {
               return (
-                <TableRow>
+                <TableRow key={record.id}>
                   <TableCell>
                     {record.worker.firstname} {record.worker.lastname}
                   </TableCell>

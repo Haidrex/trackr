@@ -108,7 +108,7 @@ recordsRouter.post(
           width: 20,
         },
         {
-          header: "Pradžia",
+          header: "Pradzia",
           key: "pradzia",
           width: 20,
         },
@@ -118,12 +118,21 @@ recordsRouter.post(
           width: 20,
         },
         {
-          header: "Išdirbta",
+          header: "Isdirbta",
           key: "isdirbta",
           width: 20,
         },
       ];
 
+      worksheet.insertRow(1, [
+        `Darbuotojas: ${records.firstname} ${records.lastname}`,
+      ]);
+      worksheet.insertRow(2, [`Kennitala: ${records.kennitala}`]);
+      worksheet.insertRow(3, [
+        `Periodas: ${new Date(from).toISOString().slice(0, 10)} - ${new Date(to)
+          .toISOString()
+          .slice(0, 10)}`,
+      ]);
       records.records.forEach((record) => {
         let arrivalTime;
         let departureTime;
@@ -133,7 +142,7 @@ recordsRouter.post(
               hour: "numeric",
               minute: "numeric",
               hour12: false,
-            }) || "Nepažymėta";
+            }) || "Nezymeta";
         }
 
         if (record.departure) {
@@ -142,8 +151,9 @@ recordsRouter.post(
             minute: "numeric",
             hour12: false,
           });
+        } else {
+          departureTime = "Nezymeta";
         }
-
         const timeWorked = record.departure - record.arrival;
 
         worksheet.addRow({
@@ -157,7 +167,7 @@ recordsRouter.post(
       const buffer = await workbook.csv.writeBuffer();
       response.send(buffer);
     } catch (error) {
-      response.status(500).json({ error: error.message });
+      response.status(500).json({ message: error.message });
     }
   }
 );
@@ -171,8 +181,10 @@ recordsRouter.get(
       const year = date.getFullYear();
       const month = date.getMonth() + 1;
       const day = date.getDate();
+
       const from = new Date(`${year}-${month}-${day} 00:00`);
       const to = new Date(`${year}-${month}-${day} 23:59`);
+
       const records = await prisma.record.findMany({
         where: {
           arrival: {
@@ -184,7 +196,7 @@ recordsRouter.get(
       });
       response.status(200).json(records);
     } catch (error) {
-      response.status(500).json({ error: error.message });
+      response.status(500).json({ message: error.message });
     }
   }
 );
@@ -224,8 +236,8 @@ recordsRouter.post(
         },
         { header: "Atvyko", key: "atvyko", width: 10 },
         ,
-        { header: "Išvyko", key: "isvyko", width: 10 },
-        { header: "Išdirbta", key: "isdirbta", width: 10 },
+        { header: "Isvyko", key: "isvyko", width: 10 },
+        { header: "Isdirba", key: "isdirbta", width: 10 },
       ];
 
       worksheet.insertRow(1, [`Data: ${year}-${month}-${day}`]);
@@ -333,12 +345,6 @@ recordsRouter.post("/", [authJwt.verifyToken], async (request, response) => {
           message: "Išvykimas jau pažymėtas",
         });
       }
-
-      //get year month day from departure
-      const newDate = new Date(departure);
-      const newyear = newDate.getFullYear();
-      const newmonth = newDate.getMonth() + 1;
-      const newday = newDate.getDate();
       //get last record of worker
       const lastRecord = await prisma.record.findFirst({
         where: {
@@ -405,7 +411,7 @@ recordsRouter.put("/:id", [authJwt.verifyToken], async (request, response) => {
 
     response.status(200).json(record);
   } catch (error) {
-    response.status(500).json({ error: error.message });
+    response.status(500).json({ message: error.message });
   }
 });
 
