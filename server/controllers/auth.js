@@ -26,9 +26,7 @@ authRouter.post("/login", async (req, res) => {
       });
     }
 
-    let token = jwt.sign({ id: user.id }, config.secret, {
-      expiresIn: 86400, // 24 hours
-    });
+    let token = jwt.sign({ id: user.id }, config.secret, {});
 
     res.status(200).send({
       id: user.id,

@@ -8,13 +8,13 @@ import { getRecordsByRange } from "../services/recordService";
 import Loading from "../components/Loading";
 
 const Worker = () => {
+  const { id } = useParams();
   const [worker, setWorker] = useState({});
   const [loading, setLoading] = useState(true);
   const [date, setDate] = useState({
     from: new Date(),
     to: new Date(),
   });
-  const { id } = useParams();
 
   useEffect(() => {
     setLoading(true);

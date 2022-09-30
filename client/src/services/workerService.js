@@ -19,4 +19,10 @@ const deleteWorker = async (id) => {
   return await axios.delete(`${baseUrl}/${id}`, { headers: authHeader() });
 };
 
-export { getAllWorkers, getWorker, createWorker, deleteWorker };
+const updateWorker = async (worker) => {
+  return await axios.put(`${baseUrl}/${worker.id}`, worker, {
+    headers: authHeader(),
+  });
+};
+
+export { getAllWorkers, getWorker, createWorker, deleteWorker, updateWorker };

@@ -11,19 +11,32 @@ import {
 } from "@mui/material";
 import InfoIcon from "@mui/icons-material/Info";
 import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import { useNavigate } from "react-router-dom";
 import DeleteModal from "./DeleteModal";
+import EditModal from "./EditModal";
 
 const WorkersTable = ({ workers, setWorkers }) => {
   let navigate = useNavigate();
-  const [deleteId, setDeleteId] = useState(null);
+
+  const [selectedId, setSelectedId] = useState(null);
 
   const [open, setOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+
   const handleOpen = (id) => {
-    setDeleteId(id);
+    setSelectedId(id);
     setOpen(true);
   };
+
+  const handleEditOpen = (id) => {
+    setSelectedId(id);
+    setEditOpen(true);
+  };
+
   const handleClose = () => setOpen(false);
+  const handleEditClose = () => setEditOpen(false);
+
   return (
     <TableContainer
       component={Paper}
@@ -52,8 +65,16 @@ const WorkersTable = ({ workers, setWorkers }) => {
                   >
                     <InfoIcon color="primary" fontSize="medium" />
                   </Button>
+                  <Button variant="outlined">
+                    <EditIcon
+                      color="primary"
+                      fontSize="medium"
+                      onClick={() => handleEditOpen(worker.id)}
+                    />
+                  </Button>
                   <Button
                     variant="outlined"
+                    color="error"
                     onClick={() => handleOpen(worker.id)}
                   >
                     <DeleteIcon color="error" fontSize="medium" />
@@ -64,12 +85,19 @@ const WorkersTable = ({ workers, setWorkers }) => {
           })}
         </TableBody>
       </Table>
+      <EditModal
+        open={editOpen}
+        handleClose={handleEditClose}
+        workers={workers}
+        setWorkers={setWorkers}
+        workerId={selectedId}
+      />
       <DeleteModal
         open={open}
         handleClose={handleClose}
         workers={workers}
         setData={setWorkers}
-        workerId={deleteId}
+        workerId={selectedId}
       />
     </TableContainer>
   );

@@ -7,10 +7,6 @@ const getAllRecords = async () => {
   return await axios.get(baseUrl, { headers: authHeader() });
 };
 
-const getTodaysRecords = async () => {
-  return await axios.get(`${baseUrl}/today`, { headers: authHeader() });
-};
-
 const getRecordsByDate = async (date) => {
   return await axios.get(`${baseUrl}/${date}`, { headers: authHeader() });
 };
@@ -47,7 +43,6 @@ const exportByRange = async (id, from, to) => {
 
 export {
   getAllRecords,
-  getTodaysRecords,
   getRecordsByDate,
   createRecord,
   exportRecords,

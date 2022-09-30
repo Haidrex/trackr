@@ -160,41 +160,12 @@ recordsRouter.post(
           data: new Date(record.arrival).toISOString().slice(0, 10),
           pradzia: arrivalTime,
           pabaiga: departureTime,
-          isdirbta: new Date(timeWorked).toISOString().slice(11, 19),
+          isdirbta: new Date(timeWorked).toISOString().slice(11, 16),
         });
       });
 
       const buffer = await workbook.csv.writeBuffer();
       response.send(buffer);
-    } catch (error) {
-      response.status(500).json({ message: error.message });
-    }
-  }
-);
-
-recordsRouter.get(
-  "/today",
-  [authJwt.verifyToken],
-  async (request, response) => {
-    try {
-      const date = new Date();
-      const year = date.getFullYear();
-      const month = date.getMonth() + 1;
-      const day = date.getDate();
-
-      const from = new Date(`${year}-${month}-${day} 00:00`);
-      const to = new Date(`${year}-${month}-${day} 23:59`);
-
-      const records = await prisma.record.findMany({
-        where: {
-          arrival: {
-            gte: from,
-            lte: to,
-          },
-        },
-        include: { worker: true },
-      });
-      response.status(200).json(records);
     } catch (error) {
       response.status(500).json({ message: error.message });
     }
@@ -237,7 +208,7 @@ recordsRouter.post(
         { header: "Atvyko", key: "atvyko", width: 10 },
         ,
         { header: "Isvyko", key: "isvyko", width: 10 },
-        { header: "Isdirba", key: "isdirbta", width: 10 },
+        { header: "Isdirbta", key: "isdirbta", width: 10 },
       ];
 
       worksheet.insertRow(1, [`Data: ${year}-${month}-${day}`]);
@@ -261,7 +232,7 @@ recordsRouter.post(
           darbuotojas: `${record.worker.firstname} ${record.worker.lastname}`,
           atvyko: arrivalTime,
           isvyko: departureTime,
-          isdirbta: new Date(timeWorked).toISOString().slice(11, 19),
+          isdirbta: new Date(timeWorked).toISOString().slice(11, 16),
         });
       });
 

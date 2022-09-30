@@ -12,6 +12,7 @@ import {
   Alert,
   TextField,
   Typography,
+  Autocomplete,
 } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/modern/AdapterDayjs";
@@ -35,20 +36,20 @@ const RecordForm = ({ records, setRecords }) => {
   const [error, setError] = useState(null);
   const [open, setOpen] = useState(false);
   const [workers, setWorkers] = useState([]);
-  const [inputs, setInputs] = useState({
-    worker: 0,
-    type: "arrival",
-  });
+  const [worker, setWorker] = useState(null);
+  const [type, setType] = useState("arrival");
   const [time, setTime] = useState(new Date());
 
   useEffect(() => {
     async function getData() {
       const response = await getAllWorkers();
-      setWorkers(response.data);
-      setInputs({
-        worker: response.data[0].id,
-        type: "arrival",
-      });
+      //set workers to array of objects with id and firstname and lastname as label
+      setWorkers(
+        response.data.map((worker) => ({
+          label: `${worker.firstname} ${worker.lastname}`,
+          id: worker.id,
+        }))
+      );
     }
     getData();
   }, []);
@@ -60,31 +61,25 @@ const RecordForm = ({ records, setRecords }) => {
     setOpen(false);
   };
 
-  const handleChange = (event) => {
-    setInputs({ ...inputs, [event.target.name]: event.target.value });
-  };
-
   const handleSubmit = async () => {
     setError(null);
     try {
-      if (inputs.type === "arrival") {
+      if (type === "arrival") {
         const response = await createRecord({
-          worker: inputs.worker,
+          worker: worker,
           arrival: time,
-          type: inputs.type,
+          type: type,
         });
         setOpen(true);
         setRecords((prev) => [...prev, response.data]);
       } else {
         await createRecord({
-          worker: inputs.worker,
+          worker: worker,
           departure: time,
-          type: inputs.type,
+          type: type,
         });
         //get index of the record to update
-        const index = records.findIndex(
-          (record) => record.workerId === inputs.worker
-        );
+        const index = records.findIndex((record) => record.workerId === worker);
         //update the record
         const updatedRecord = { ...records[index], departure: time };
         //update the records array
@@ -102,23 +97,15 @@ const RecordForm = ({ records, setRecords }) => {
     <StyledBox component={Paper}>
       <Clock />
       <FormControl>
-        <InputLabel id="worker-select-label">Darbuotojas</InputLabel>
-        <Select
-          labelId="worker-select-label"
-          label="Darbuotojas"
+        <Autocomplete
+          disablePortal
           name="worker"
-          value={inputs.worker}
-          onChange={handleChange}
-        >
-          {workers.map((worker) => {
-            return (
-              <MenuItem
-                value={worker.id}
-                key={worker.id}
-              >{`${worker.firstname} ${worker.lastname}`}</MenuItem>
-            );
-          })}
-        </Select>
+          options={workers}
+          onChange={(e, newValue) => setWorker(newValue.id)}
+          renderInput={(params) => (
+            <TextField {...params} label="Darbuotojas" />
+          )}
+        />
       </FormControl>
       <FormControl>
         <InputLabel id="record-type-label">Tipas</InputLabel>
@@ -126,8 +113,8 @@ const RecordForm = ({ records, setRecords }) => {
           labelId="record-type-label"
           label="Tipas"
           name="type"
-          value={inputs.type}
-          onChange={handleChange}
+          value={type}
+          onChange={(e) => setType(e.target.value)}
         >
           <MenuItem value="arrival" key="1">
             Atvykimas
