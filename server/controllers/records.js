@@ -244,6 +244,8 @@ recordsRouter.post(
   }
 );
 
+//TODO add validation if departure is before arrival
+
 recordsRouter.post("/", [authJwt.verifyToken], async (request, response) => {
   try {
     const { arrival, departure, worker, type } = request.body;

@@ -35,6 +35,8 @@ const schema = yup
   })
   .required();
 
+//TODO - add edit functionality
+
 const EditModal = ({ open, handleClose, workers, setData, workerId }) => {
   const [error, setError] = useState(null);
   const {
