@@ -20,6 +20,7 @@ const WorkersTable = ({ workers, setWorkers }) => {
   let navigate = useNavigate();
 
   const [selectedId, setSelectedId] = useState(null);
+  const [editSelected, setEditSelected] = useState(null);
 
   const [open, setOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
@@ -29,8 +30,8 @@ const WorkersTable = ({ workers, setWorkers }) => {
     setOpen(true);
   };
 
-  const handleEditOpen = (id) => {
-    setSelectedId(id);
+  const handleEditOpen = (worker) => {
+    setEditSelected(worker);
     setEditOpen(true);
   };
 
@@ -69,7 +70,7 @@ const WorkersTable = ({ workers, setWorkers }) => {
                     <EditIcon
                       color="primary"
                       fontSize="medium"
-                      onClick={() => handleEditOpen(worker.id)}
+                      onClick={() => handleEditOpen(worker)}
                     />
                   </Button>
                   <Button
@@ -85,20 +86,23 @@ const WorkersTable = ({ workers, setWorkers }) => {
           })}
         </TableBody>
       </Table>
-      <EditModal
-        open={editOpen}
-        handleClose={handleEditClose}
-        workers={workers}
-        setWorkers={setWorkers}
-        workerId={selectedId}
-      />
-      <DeleteModal
-        open={open}
-        handleClose={handleClose}
-        workers={workers}
-        setData={setWorkers}
-        workerId={selectedId}
-      />
+      {editOpen && (
+        <EditModal
+          open={editOpen}
+          handleClose={handleEditClose}
+          worker={editSelected}
+          setWorkers={setWorkers}
+        />
+      )}
+      {open && (
+        <DeleteModal
+          open={open}
+          handleClose={handleClose}
+          workers={workers}
+          setData={setWorkers}
+          workerId={selectedId}
+        />
+      )}
     </TableContainer>
   );
 };

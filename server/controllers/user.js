@@ -17,35 +17,31 @@ userRouter.get(
   }
 );
 
-userRouter.post(
-  "/",
-  [authJwt.verifyToken, authJwt.isAdmin],
-  async (request, response) => {
-    try {
-      const { username, password, isadmin } = request.body;
+userRouter.post("/", async (request, response) => {
+  try {
+    const { username, password, isadmin } = request.body;
 
-      if (!username || !password) {
-        return response.status(400).json({
-          message: "Trūksta duomenų",
-        });
-      }
-
-      const saltrounds = 10;
-      const passwordHash = await bcrypt.hash(password, saltrounds);
-
-      const user = await prisma.user.create({
-        data: {
-          username,
-          password: passwordHash,
-          isadmin,
-        },
+    if (!username || !password) {
+      return response.status(400).json({
+        message: "Trūksta duomenų",
       });
-
-      response.status(201).json(user);
-    } catch (error) {
-      response.status(500).json({ message: error.message });
     }
+
+    const saltrounds = 10;
+    const passwordHash = await bcrypt.hash(password, saltrounds);
+
+    const user = await prisma.user.create({
+      data: {
+        username,
+        password: passwordHash,
+        isadmin,
+      },
+    });
+
+    response.status(201).json(user);
+  } catch (error) {
+    response.status(500).json({ message: error.message });
   }
-);
+});
 
 module.exports = userRouter;

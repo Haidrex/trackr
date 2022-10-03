@@ -67,15 +67,25 @@ const RecordForm = ({ records, setRecords }) => {
       if (type === "arrival") {
         const response = await createRecord({
           worker: worker,
-          arrival: time,
+          time: time,
           type: type,
         });
+        console.log(response);
         setOpen(true);
-        setRecords((prev) => [...prev, response.data]);
+        const index = records.findIndex(
+          (record) => record.id === response.data.id
+        );
+        if (index === -1) {
+          setRecords([...records, response.data]);
+        } else {
+          const newRecords = [...records];
+          newRecords[index] = response.data;
+          setRecords(newRecords);
+        }
       } else {
         await createRecord({
           worker: worker,
-          departure: time,
+          time: time,
           type: type,
         });
         //get index of the record to update
@@ -124,6 +134,7 @@ const RecordForm = ({ records, setRecords }) => {
           </MenuItem>
         </Select>
       </FormControl>
+      {/* FIXME: timepicker crashes when deleting everything, pls fix */}
       <FormControl>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <TimePicker

@@ -4,7 +4,7 @@ import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import styled from "@emotion/styled";
-import { createWorker } from "../../services/workerService";
+import { createWorker, updateWorker } from "../../services/workerService";
 
 const StyledBox = styled(Box)(({ theme }) => ({
   position: "absolute",
@@ -35,9 +35,7 @@ const schema = yup
   })
   .required();
 
-//TODO - add edit functionality
-
-const EditModal = ({ open, handleClose, workers, setData, workerId }) => {
+const EditModal = ({ open, handleClose, worker, setWorkers }) => {
   const [error, setError] = useState(null);
   const {
     control,
@@ -45,9 +43,9 @@ const EditModal = ({ open, handleClose, workers, setData, workerId }) => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      firstname: "",
-      lastname: "",
-      kennitala: "",
+      firstname: worker.firstname,
+      lastname: worker.lastname,
+      kennitala: worker.kennitala,
     },
     resolver: yupResolver(schema),
   });
@@ -55,8 +53,17 @@ const EditModal = ({ open, handleClose, workers, setData, workerId }) => {
   const onSubmit = async (data) => {
     setError(null);
     try {
-      const response = await createWorker(data);
-      setData((values) => [...values, response.data]);
+      const response = await updateWorker({
+        id: worker.id,
+        firstname: data.firstname,
+        lastname: data.lastname,
+        kennitala: data.kennitala,
+      });
+      setWorkers((values) => {
+        const index = values.findIndex((w) => w.id === worker.id);
+        values[index] = response.data;
+        return [...values];
+      });
       handleClose();
     } catch (error) {
       setError(error.response.data.message);

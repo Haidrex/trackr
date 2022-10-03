@@ -85,12 +85,12 @@ workerRouter.delete(
 
       response.status(204).json({ message: "Worker deleted" });
     } catch (error) {
-      response.status(500).json({ error: error.message });
+      response.status(500).json({ message: error.message });
     }
   }
 );
 
-workerRouter.patch(
+workerRouter.put(
   "/:id",
   [authJwt.verifyToken, authJwt.isAdmin],
   async (request, response) => {
@@ -98,14 +98,25 @@ workerRouter.patch(
       const { firstname, lastname, kennitala } = request.body;
       const { id } = request.params;
 
-      const response = await prisma.worker.update(
-        { where: { id } },
-        { data: { firstname, lastname, kennitala } }
-      );
-      response.status(200).json(response);
+      if (!firstname | !lastname | !kennitala) {
+        return response.status(400).json({
+          error: "Trūksta duomenų",
+        });
+      }
+
+      const updatedWorker = await prisma.worker.update({
+        where: { id: Number(id) },
+        data: {
+          firstname,
+          lastname,
+          kennitala,
+        },
+      });
+
+      response.status(200).json(updatedWorker);
     } catch (error) {
       response.status(500).json({
-        error: error.message,
+        message: error.message,
       });
     }
   }
