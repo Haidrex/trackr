@@ -43,7 +43,6 @@ const RecordForm = ({ records, setRecords }) => {
   useEffect(() => {
     async function getData() {
       const response = await getAllWorkers();
-      //set workers to array of objects with id and firstname and lastname as label
       setWorkers(
         response.data.map((worker) => ({
           label: `${worker.firstname} ${worker.lastname}`,
@@ -70,7 +69,6 @@ const RecordForm = ({ records, setRecords }) => {
           time: time,
           type: type,
         });
-        console.log(response);
         setOpen(true);
         const index = records.findIndex(
           (record) => record.id === response.data.id
@@ -134,13 +132,16 @@ const RecordForm = ({ records, setRecords }) => {
           </MenuItem>
         </Select>
       </FormControl>
-      {/* FIXME: timepicker crashes when deleting everything, pls fix */}
       <FormControl>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <TimePicker
             label="Laikas"
             value={time}
-            onChange={(e) => setTime(e.$d)}
+            onChange={(e) => {
+              if (e) {
+                setTime(e.$d);
+              }
+            }}
             ampm={false}
             renderInput={(params) => <TextField {...params} />}
           />

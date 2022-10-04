@@ -27,7 +27,6 @@ const DeleteModal = ({ open, handleClose, workers, setData, workerId }) => {
   //delete worker by id
   const handleClick = () => {
     const response = deleteWorker(workerId);
-    console.log(response);
     const newWorkers = workers.filter((worker) => worker.id !== workerId);
     setData(newWorkers);
     handleClose();
