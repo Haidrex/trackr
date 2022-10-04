@@ -244,7 +244,6 @@ recordsRouter.post(
   }
 );
 
-//TODO: add validation if departure is before arrival
 recordsRouter.post("/", [authJwt.verifyToken], async (request, response) => {
   try {
     const { time, worker, type } = request.body;
@@ -275,17 +274,35 @@ recordsRouter.post("/", [authJwt.verifyToken], async (request, response) => {
       });
 
       if (records.length > 0) {
-        //update record
-        const record = await prisma.record.update({
-          where: {
-            id: records[0].id,
-          },
-          data: {
-            arrival: time,
-          },
-          include: { worker: true },
-        });
-        return response.status(200).json(record);
+        if (records[0].departure) {
+          if (records[0].departure > new Date(time)) {
+            const record = await prisma.record.update({
+              where: {
+                id: records[0].id,
+              },
+              data: {
+                arrival: time,
+              },
+              include: { worker: true },
+            });
+            return response.status(200).json(record);
+          } else {
+            return response.status(400).json({
+              message: "Atvykimas negali būti vėlesnis nei išvykimas",
+            });
+          }
+        } else {
+          const record = await prisma.record.update({
+            where: {
+              id: records[0].id,
+            },
+            data: {
+              arrival: time,
+            },
+            include: { worker: true },
+          });
+          return response.status(200).json(record);
+        }
       } else {
         //create new record
         const record = await prisma.record.create({

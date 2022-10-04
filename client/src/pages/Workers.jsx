@@ -3,24 +3,24 @@ import React, { useState, useEffect } from "react";
 import CreateModal from "../components/workers/CreateModal";
 import WorkersTable from "../components/workers/WorkersTable";
 import { getAllWorkers } from "../services/workerService";
-
+import Loading from "../components/Loading";
 const Workers = () => {
   const [open, setOpen] = useState(false);
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
   useEffect(() => {
     async function getData() {
-      try {
-        const response = await getAllWorkers();
-        setData(response.data);
-      } catch (error) {
-        console.log(error);
-      }
+      const response = await getAllWorkers();
+      setData(response.data);
+      setLoading(false);
     }
     getData();
   }, []);
+
+  if (loading) return <Loading />;
 
   return (
     <Container sx={{ paddingTop: "2rem" }}>
