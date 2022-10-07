@@ -8,6 +8,7 @@ const authRouter = require("./controllers/auth");
 
 app.use(cors());
 app.use(express.json());
+app.use(express.static(path.join(__dirname, "../client/build")));
 
 app.use(function (req, res, next) {
   res.header(
